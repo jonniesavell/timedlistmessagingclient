@@ -42,7 +42,6 @@ public class ResponseListener implements MessageListener {
                 appraisal.setDate(Date.from(zonedDateTime.toInstant()));
                 appraisalRepository.save(appraisal);
 
-                // TODO: remove print statements
                 if (appraisal.isValid()) {
                     // this is success
                 } else {
