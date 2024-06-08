@@ -43,9 +43,13 @@ public class ResponseListener implements MessageListener {
                 appraisalRepository.save(appraisal);
 
                 // TODO: remove print statements
-                System.out.println("saved it");
+                if (appraisal.isValid()) {
+                    // this is success
+                } else {
+                    // this is failure: we did not receive the response quickly enough
+                }
             } else {
-                System.out.println("missed it");
+                // this is a failure that can only be explained by slow inserts
             }
         } catch (JMSException e) {
             throw new RuntimeException(e);

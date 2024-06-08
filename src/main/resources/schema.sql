@@ -13,6 +13,7 @@ CREATE TABLE appraisals.appraisal
     appraisal_id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     product_id BIGINT NOT NULL,
     correlation_id VARCHAR(1024) NOT NULL,
+    appraisal_valid BOOLEAN NOT NULL,
     appraisal_date TIMESTAMP,
     appraisal_amount BIGINT
 );

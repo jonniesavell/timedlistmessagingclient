@@ -2,6 +2,9 @@ package com.indigententerprises.timedlistmessagingclient.scheduling;
 
 import com.indigententerprises.messagingartifacts.AppraisalRequest;
 
+import com.indigententerprises.services.ElementAlreadyFoundException;
+import com.indigententerprises.services.TimedListService;
+
 import com.indigententerprises.timedlistmessagingclient.entities.Appraisal;
 import com.indigententerprises.timedlistmessagingclient.entities.Product;
 import com.indigententerprises.timedlistmessagingclient.messagetransmission.RequestInitiator;
@@ -24,6 +27,7 @@ public class AppraisalJob implements Job {
     private ProductRepository productRepository;
     private AppraisalRepository appraisalRepository;
     private RequestInitiator requestInitiator;
+    private TimedListService<Appraisal> timedListService;
 
     @Autowired
     public void setProductRepository(final ProductRepository productRepository) {
@@ -38,6 +42,11 @@ public class AppraisalJob implements Job {
     @Autowired
     public void setRequestInitiator(final RequestInitiator requestInitiator) {
         this.requestInitiator = requestInitiator;
+    }
+
+    @Autowired
+    public void setTimedListService(final TimedListService<Appraisal> timedListService) {
+        this.timedListService = timedListService;
     }
 
     @Override
@@ -57,6 +66,7 @@ public class AppraisalJob implements Job {
         appraisalRequest.setItemName(randomlyChosenProduct.getName());
         final Appraisal appraisal = new Appraisal();
         appraisal.setProduct(randomlyChosenProduct);
+        appraisal.setValid(true);
         final String messageId = requestInitiator.sendMessage(appraisalRequest);
 
         // TODO: there is a subtle race condition here. we seek to use a JMS provided identifier
@@ -65,7 +75,15 @@ public class AppraisalJob implements Job {
         // TODO: were the response to arrive before appraisal record were persisted, then the
         // TODO:   listener would not see the record and it would be therefore unable to
         // TODO:   update it.
+        // TODO: nothing prevents me from using my own correlation identifier and setting a
+        // TODO:   message property to its value.
         appraisal.setCorrelationId(messageId);
         appraisalRepository.save(appraisal);
+
+        try {
+            timedListService.add(appraisal, 50L);
+        } catch (ElementAlreadyFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

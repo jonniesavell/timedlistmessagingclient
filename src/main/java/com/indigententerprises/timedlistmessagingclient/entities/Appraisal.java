@@ -20,6 +20,7 @@ public class Appraisal {
     private String correlationId;
     private Date date;
     private Long amount;
+    private Boolean valid;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -67,5 +68,14 @@ public class Appraisal {
 
     public void setAmount(Long amount) {
         this.amount = amount;
+    }
+
+    @Column(name="appraisal_valid")
+    public Boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(final Boolean valid) {
+        this.valid = valid;
     }
 }
