@@ -48,7 +48,7 @@ public class ResponseListener implements MessageListener {
                     // this is failure: we did not receive the response quickly enough
                 }
             } else {
-                // this is a failure that can only be explained by slow inserts
+                // this is a failure that can only be explained by slow inserts against the database
             }
         } catch (JMSException e) {
             throw new RuntimeException(e);
