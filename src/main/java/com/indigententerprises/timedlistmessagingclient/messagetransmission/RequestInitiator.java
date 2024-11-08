@@ -20,6 +20,7 @@ public class RequestInitiator {
         this.jmsTemplate = jmsTemplate;
     }
 
+    // https://stackoverflow.com/questions/48001045/retrieve-jms-headers-right-after-the-message-is-sent-without-consuming-the-messa
     public String sendMessage(final AppraisalRequest appraisalRequest) {
 
         final AtomicReference<Message> msg = new AtomicReference<>();
